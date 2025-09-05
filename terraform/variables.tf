@@ -5,6 +5,24 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "aws_s3_bucket_name" {
+  description = "AWS S3 Bucket Name"
+  type        = string
+  default     = "bucket-hacka"
+}
+
+variable "aws_s3_access_key_id" {
+  description = "The aws access key id"
+  type        = string
+  sensitive   = true
+}
+
+variable "aws_s3_secret_access_key" {
+  description = "The aws secret access key"
+  type        = string
+  sensitive   = true
+}
+
 # # Database hacka configuration
 # variable "db_hacka_username" {
 #   description = "The username for the RDS hacka instance"
