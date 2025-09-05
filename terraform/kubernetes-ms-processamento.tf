@@ -1,22 +1,26 @@
-# resource "kubernetes_secret" "secrets-ms-processamento" {
-#   metadata {
-#     name = "secrets-ms-processamento"
-#   }
+/*resource "kubernetes_secret" "secrets-ms-processamento" {
+  metadata {
+    name = "secrets-ms-processamento"
+  }
 
-#   type = "Opaque"
+  type = "Opaque"
 
-#   data = {
-#     DB_HOST             = element(split(":",data.aws_db_instance.hacka_db.endpoint),0)
-#     DB_PORT             = var.db_hacka_port
-#     DB_NAME             = var.db_hacka_name
-#     DB_USER             = var.db_hacka_username
-#     DB_PASSWORD         = var.db_hacka_password
-#   }
+  data = {
+    DB_HOST             = element(split(":",data.aws_db_instance.hacka_db.endpoint),0)
+    DB_PORT             = var.db_hacka_port
+    DB_NAME             = var.db_hacka_name
+    DB_USER             = var.db_hacka_username
+    DB_PASSWORD         = var.db_hacka_password
+    AWS_REGION=var.aws_region
+    AWS_S3_BUCKET_NAME=var.aws_s3_bucket_name
+    AWS_ACCESS_KEY_ID=var.aws_s3_access_key_id
+    AWS_SECRET_ACCESS_KEY=var.aws_s3_secret_access_key
+  }
 
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-# }
+  lifecycle {
+    prevent_destroy = false
+  }
+}*/
 
 # MS PROCESSAMENTO 
 resource "kubernetes_deployment" "deployment-ms-processamento" {
@@ -26,7 +30,7 @@ resource "kubernetes_deployment" "deployment-ms-processamento" {
   }
 
   spec {
-    replicas = 2
+    replicas = 1
 
     selector {
       match_labels = {
@@ -51,7 +55,7 @@ resource "kubernetes_deployment" "deployment-ms-processamento" {
 
         container {
           name  = "deployment-ms-processamento-container"
-          image = "${var.dockerhub_username}/spring-boot-teste-2:latest"
+          image = "${var.dockerhub_username}/fiap_hackathon_ms_processamento:latest"
 
           resources {
             requests = {
@@ -64,11 +68,11 @@ resource "kubernetes_deployment" "deployment-ms-processamento" {
             }
           }
 
-          # env_from {
-          #   secret_ref {
-          #     name = kubernetes_secret.secrets-ms-processamento.metadata[0].name
-          #   }
-          # }
+/*          env_from {
+            secret_ref {
+              name = kubernetes_secret.secrets-ms-processamento.metadata[0].name
+            }
+          }*/
 
           port {
             container_port = "8080"

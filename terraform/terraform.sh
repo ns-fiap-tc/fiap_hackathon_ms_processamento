@@ -21,4 +21,7 @@ PARAMS="$@"
 
 terraform $METHOD $PARAMS \
 -var "aws_region=$AWS_REGION" \
+-var "aws_s3_bucket_name=$AWS_S3_BUCKET_NAME" \
+-var "aws_s3_access_key_id=$AWS_S3_ACCESS_KEY_ID" \
+-var "aws_s3_secret_access_key=$AWS_S3_SECRET_ACCESS_KEY" \
 -var "dockerhub_username=$DOCKERHUB_USERNAME"
