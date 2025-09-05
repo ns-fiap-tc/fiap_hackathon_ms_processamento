@@ -1,0 +1,46 @@
+# run command:  docker-compose up -d
+# docker run -it lanchonete-produto-produto bash
+# mvn -DskipTests -DskipITs=true clean package spring-boot:repackage
+
+
+name: hackathon
+
+services:
+    processamento:
+        container_name: processamento
+        build:
+            context: .
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        environment:
+            AWS_REGION: ${AWS_REGION}
+            AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME}
+            AWS_ACCESS_KEY_ID: ${AWS_S3_ACCESS_KEY_ID}
+            AWS_SECRET_ACCESS_KEY: ${AWS_S3_SECRET_ACCESS_KEY}
+        ports:
+            - 8080:8080
+        networks:
+            - app-network
+            - processamento-network
+            - external-network
+
+networks:
+    processamento-network:
+        name: processamento-net
+        driver: bridge
+        internal: true
+        ipam:
+            driver: default
+            config:
+                - subnet: 10.5.2.0/24
+
+    app-network:
+        name: app-net
+        driver: bridge
+        external: true
+        
+    external-network:
+        name: lanch-net
+        driver: bridge
+        external: true
