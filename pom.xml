@@ -82,6 +82,11 @@
             <artifactId>s3</artifactId>
             <version>${aws.java.sdk.version}</version>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3-transfer-manager</artifactId>
+            <version>${aws.java.sdk.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>

@@ -3,6 +3,7 @@ package br.com.fiap.hacka.processamento.controller;
 import br.com.fiap.hacka.processamento.dto.ProcessingResult;
 import br.com.fiap.hacka.processamento.service.VideoProcessingService;
 import br.com.fiap.hacka.processamento.service.VideoProcessingServiceAWS;
+import br.com.fiap.hacka.processamento.service.VideoProcessingServiceAWSTransferManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +16,10 @@ import java.io.IOException;
 @RestController
 public class VideoController {
 
-    private final VideoProcessingServiceAWS videoProcessingService;
+    //private final VideoProcessingServiceAWS videoProcessingService;
+    private final VideoProcessingServiceAWSTransferManager videoProcessingService;
 
-    public VideoController(VideoProcessingServiceAWS videoProcessingService) {
+    public VideoController(VideoProcessingServiceAWSTransferManager videoProcessingService) {
         this.videoProcessingService = videoProcessingService;
     }
 
