@@ -24,4 +24,8 @@ terraform $METHOD $PARAMS \
 -var "aws_s3_bucket_name=$AWS_S3_BUCKET_NAME" \
 -var "aws_s3_access_key_id=$AWS_S3_ACCESS_KEY_ID" \
 -var "aws_s3_secret_access_key=$AWS_S3_SECRET_ACCESS_KEY" \
+-var "db_hacka_username=$DB_HACKA_USERNAME" \
+-var "db_hacka_password=$DB_HACKA_PASSWORD" \
+-var "db_hacka_name=$DB_HACKA_NAME" \
+-var "db_hacka_port=$DB_HACKA_PORT" \
 -var "dockerhub_username=$DOCKERHUB_USERNAME"
