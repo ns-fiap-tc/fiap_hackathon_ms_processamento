@@ -10,9 +10,9 @@ resource "kubernetes_secret" "secrets-ms-processamento" {
     DB_PORT             = var.db_hacka_port
     DB_NAME             = var.db_hacka_name
     DB_USER             = var.db_hacka_username
-    DB_PASSWORD         = var.db_hacka_password
+    DB_PASS             = var.db_hacka_password
 
-    MESSAGE_QUEUE_HOST   = kubernetes_service.messagequeue_service.metadata[0].name
+    MESSAGE_QUEUE_HOST   = data.kubernetes_service.messagequeue_service.metadata[0].name
     //NOTIFICACAO_SERVICE_HOST = data.kubernetes_service.service-ms-produto.metadata[0].name
 
     AWS_REGION=var.aws_region
@@ -108,7 +108,7 @@ resource "kubernetes_deployment" "deployment-ms-processamento" {
       }
     }
   }
-  depends_on = [kubernetes_deployment.messagequeue_deployment]
+  #depends_on = [kubernetes_deployment.messagequeue_deployment]
 }
 
 resource "kubernetes_service" "service-ms-processamento" {
