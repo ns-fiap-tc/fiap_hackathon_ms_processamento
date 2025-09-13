@@ -1,4 +1,4 @@
-/*resource "kubernetes_secret" "secrets-ms-processamento" {
+resource "kubernetes_secret" "secrets-ms-processamento" {
   metadata {
     name = "secrets-ms-processamento"
   }
@@ -6,11 +6,15 @@
   type = "Opaque"
 
   data = {
-    DB_HOST             = element(split(":",data.aws_db_instance.hacka_db.endpoint),0)
+    DB_HOST             = data.kubernetes_service.mongodb-service.metadata[0].name
     DB_PORT             = var.db_hacka_port
     DB_NAME             = var.db_hacka_name
     DB_USER             = var.db_hacka_username
     DB_PASSWORD         = var.db_hacka_password
+
+    MESSAGE_QUEUE_HOST   = kubernetes_service.messagequeue_service.metadata[0].name
+    //NOTIFICACAO_SERVICE_HOST = data.kubernetes_service.service-ms-produto.metadata[0].name
+
     AWS_REGION=var.aws_region
     AWS_S3_BUCKET_NAME=var.aws_s3_bucket_name
     AWS_ACCESS_KEY_ID=var.aws_s3_access_key_id
@@ -20,7 +24,7 @@
   lifecycle {
     prevent_destroy = false
   }
-}*/
+}
 
 # MS PROCESSAMENTO 
 resource "kubernetes_deployment" "deployment-ms-processamento" {
@@ -68,11 +72,11 @@ resource "kubernetes_deployment" "deployment-ms-processamento" {
             }
           }
 
-/*          env_from {
+          env_from {
             secret_ref {
               name = kubernetes_secret.secrets-ms-processamento.metadata[0].name
             }
-          }*/
+          }
 
           port {
             container_port = "8080"
@@ -104,6 +108,7 @@ resource "kubernetes_deployment" "deployment-ms-processamento" {
       }
     }
   }
+  depends_on = [kubernetes_deployment.messagequeue_deployment]
 }
 
 resource "kubernetes_service" "service-ms-processamento" {
