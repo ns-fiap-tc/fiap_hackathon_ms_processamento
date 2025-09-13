@@ -17,6 +17,13 @@ data "kubernetes_service" "mongodb-service" {
   }
 }
 
+data "kubernetes_service" "messagequeue_service" {
+  metadata {
+    name      = "messagequeue"
+    namespace = "default"
+  }
+}
+
 # data "kubernetes_service" "service-ms-notificacao" {
 #   metadata {
 #     name      = "service-ms-notificacao"
