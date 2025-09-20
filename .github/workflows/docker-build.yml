@@ -32,6 +32,6 @@ jobs:
           -t ${{ secrets.DOCKERHUB_GUILHERME_USERNAME }}/fiap_hackathon_ms_processamento:latest \
           -f Dockerfile .
 
-      - name: 🚀 Push da imagem do ms-categoria dp App Lanchonete
+      - name: 🚀 Push da imagem do ms-processamento do App Fiap Hacka
         run: |
           docker push ${{ secrets.DOCKERHUB_GUILHERME_USERNAME }}/fiap_hackathon_ms_processamento:latest
