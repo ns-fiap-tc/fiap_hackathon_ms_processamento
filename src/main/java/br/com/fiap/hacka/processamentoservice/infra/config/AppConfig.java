@@ -1,4 +1,4 @@
-package br.com.fiap.processamentoservice.infra.config;
+package br.com.fiap.hacka.processamentoservice.infra.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

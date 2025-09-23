@@ -1,4 +1,4 @@
-package br.com.fiap.processamentoservice.infra.config;
+package br.com.fiap.hacka.processamentoservice.infra.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
