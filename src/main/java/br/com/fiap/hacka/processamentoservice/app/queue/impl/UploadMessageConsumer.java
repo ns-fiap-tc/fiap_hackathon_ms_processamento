@@ -112,7 +112,7 @@ public class UploadMessageConsumer implements MessageConsumer {
         //The S3 upload reads directly from the PipedInputStream, streaming them as they arrive.
         //This means S3 receives data as the ZIP is being created, not after the full file is in memory.
         final AtomicBoolean isOk = new AtomicBoolean(true);
-        String s3Key = "files/" + fileName + ".zip";
+        String s3Key = "files/"+ userName + "/" + fileName + ".zip";
         AtomicReference<String> url = new AtomicReference<>();
         try (PipedOutputStream pipedOut = new PipedOutputStream();
              PipedInputStream pipedIn = new PipedInputStream(pipedOut, FilePartDto.CHUNK_SIZE); //1MB same size of each chunk.
@@ -160,14 +160,14 @@ public class UploadMessageConsumer implements MessageConsumer {
 
             //s3Client.putObject(putRequest, RequestBody.fromInputStream(pipedIn, Long.MAX_VALUE));
             s3Client.putObject(
-                    PutObjectRequest.builder().bucket(bucketName).key(fileName+".zip").build(),
+                    PutObjectRequest.builder().bucket(bucketName).key(s3Key).build(),
                     RequestBody.fromBytes(pipedIn.readAllBytes())
             );
 
-            log.info(getPresignedUrl(fileName + ".zip"));
+            log.info(getPresignedUrl(s3Key));
 
             zipFuture.get(); // ensure ZIP thread completed
-            log.info("File uploaded to S3: " + fileName + ".zip");
+            log.info("File uploaded to S3: " + s3Key);
         } catch (Exception e) {
             isOk.set(false);
             log.error("Failed to process and upload file " + fileName, e);
