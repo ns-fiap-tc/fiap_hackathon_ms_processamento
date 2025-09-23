@@ -13,7 +13,7 @@ resource "kubernetes_secret" "secrets-ms-processamento" {
     DB_PASS             = var.db_hacka_password
 
     MESSAGE_QUEUE_HOST   = data.kubernetes_service.messagequeue_service.metadata[0].name
-    //NOTIFICACAO_SERVICE_HOST = data.kubernetes_service.service-ms-produto.metadata[0].name
+    NOTIFICACAO_SERVICE_CLIENT = data.kubernetes_service.service-ms-notificacao.metadata[0].name
 
     AWS_REGION=var.aws_region
     AWS_S3_BUCKET_NAME=var.aws_s3_bucket_name
