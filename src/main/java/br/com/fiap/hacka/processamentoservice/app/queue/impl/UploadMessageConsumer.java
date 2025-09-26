@@ -215,7 +215,7 @@ public class UploadMessageConsumer implements MessageConsumer {
         return s3Presigner.presignGetObject(presignRequest).url().toString();
     }
 
-    private void processRaw(String fileName, BlockingQueue<FilePartDto> queue) {
+/*    private void processRaw(String fileName, BlockingQueue<FilePartDto> queue) {
         File outputFile = new File("/tmp/files/" + fileName + ".zip");
         new File("/tmp/files").mkdir();
 
@@ -298,5 +298,5 @@ public class UploadMessageConsumer implements MessageConsumer {
                 }
             }
         }
-    }
+    }*/
 }
