@@ -3,11 +3,10 @@ package br.com.fiap.hacka.processamentoservice.app.queue.impl;
 import br.com.fiap.hacka.core.commons.dto.FilePartDto;
 import br.com.fiap.hacka.core.commons.dto.NotificacaoDto;
 import br.com.fiap.hacka.processamentoservice.app.queue.MessageConsumer;
+import br.com.fiap.hacka.processamentoservice.app.queue.MessageProducer;
 import br.com.fiap.hacka.processamentoservice.app.rest.client.NotificacaoServiceClient;
 import br.com.fiap.hacka.processamentoservice.app.service.FileDataService;
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -45,11 +44,15 @@ public class UploadMessageConsumer implements MessageConsumer {
     private final Map<String, BlockingQueue<FilePartDto>> fileQueues = new ConcurrentHashMap<>();
     private static final Set<String> failedFiles = ConcurrentHashMap.newKeySet();
     private final ExecutorService executor = Executors.newCachedThreadPool();
+    private final MessageProducer messageProducer;
     private final FileDataService fileDataService;
     private final NotificacaoServiceClient notificacaoServiceClient;
 
     private final S3Client s3Client;
     private final S3Presigner s3Presigner;
+
+    @Value("${rabbitmq.queue.producer.messageQueue}")
+    private String queueName;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
@@ -86,6 +89,16 @@ public class UploadMessageConsumer implements MessageConsumer {
 
                         // stop further processing by removing the queue
                         fileQueues.remove(fileName);
+
+                        // frame-extractor service notification.
+                        filePart.setBytesRead(-3);
+                        messageProducer.send(queueName, filePart);
+
+                        // notify user just once
+                        notificacaoServiceClient.sendWebhook(
+                                new NotificacaoDto(
+                                        "Ocorreu um erro durante o processamento do arquivo " + fileName + ".",
+                                        filePart.getWebhookUrl()));
                     }
                 }
             });
@@ -93,19 +106,6 @@ public class UploadMessageConsumer implements MessageConsumer {
             return queue;
         }).offer(filePart);
     }
-
-    /*
-    public void receive(@Payload FilePartDto filePart) {
-        log.info("Mensagem recebida: " + filePart.getFileName());
-
-        fileQueues.computeIfAbsent(filePart.getFileName(), fileName -> {
-            BlockingQueue<FilePartDto> queue = new LinkedBlockingQueue<>();
-            //executor.submit(() -> processZipToS3(fileName, queue));
-            executor.submit(() -> processZip(fileName, queue));
-            return queue;
-        }).offer(filePart);
-    }
-    */
 
     private void processZipToS3(String fileName, String userName, BlockingQueue<FilePartDto> queue) {
         //The ZIP thread writes chunks into the PipedOutputStream.
@@ -239,6 +239,17 @@ public class UploadMessageConsumer implements MessageConsumer {
         } finally {
             fileQueues.remove(fileName);
         }
+    }
+
+    public void receive(@Payload FilePartDto filePart) {
+        log.info("Mensagem recebida: " + filePart.getFileName());
+
+        fileQueues.computeIfAbsent(filePart.getFileName(), fileName -> {
+            BlockingQueue<FilePartDto> queue = new LinkedBlockingQueue<>();
+            //executor.submit(() -> processZipToS3(fileName, queue));
+            executor.submit(() -> processZip(fileName, queue));
+            return queue;
+        }).offer(filePart);
     }
 
     private void processZip(String fileName, String userName, BlockingQueue<FilePartDto> queue) {
