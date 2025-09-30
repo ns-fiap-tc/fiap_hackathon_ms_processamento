@@ -78,28 +78,6 @@ resource "kubernetes_deployment" "deployment-ms-processamento" {
             }
           }
 
-          env {
-            name  = "MANAGEMENT_METRICS_EXPORT_OTLP_ENDPOINT"
-            value = "http://otel-collector.observability.svc.cluster.local:4318/v1/metrics"
-          }
-
-          env {
-            name  = "MANAGEMENT_METRICS_EXPORT_OTLP_PROTOCOL"
-            value = "http/protobuf"
-          }
-          env {
-            name  = "MANAGEMENT_METRICS_EXPORT_OTLP_ENABLED"
-            value = "true"
-          }
-          env {
-            name  = "MANAGEMENT_METRICS_TAGS_APPLICATION"
-            value = "processamento-service"
-          }
-          env {
-            name  = "MANAGEMENT_METRICS_TAGS_SERVICE"
-            value = "ms-processamento"
-          }
-
           port {
             container_port = "8080"
           }
